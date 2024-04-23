@@ -1,0 +1,36 @@
+//@version=5
+indicator(title="RSI Momentum Panic Zones", shorttitle="RSI Momentum Panic", overlay=true)
+
+// Definicja parametrów RSI
+rsiLength = input(14, title="RSI Length")
+overboughtLevel = input(70, title="Overbought Level")
+oversoldLevel = input(30, title="Oversold Level")
+panicThreshold = input(10, title="Panic Threshold")
+
+rsiValue = ta.rsi(close, rsiLength)
+
+isOverbought = rsiValue > overboughtLevel
+isOversold = rsiValue < oversoldLevel
+
+isPanicRSI = ta.change(rsiValue, 1) < -panicThreshold
+isSurge = ta.change(rsiValue, 1) > panicThreshold
+
+
+momentumLength = input(10, title="Momentum Length")
+prevClose = close[momentumLength]
+momentumValue = close - prevClose
+
+momentumThreshold = input(0, title="Momentum Threshold")
+isHighMomentum = momentumValue > momentumThreshold
+
+isLowMomentum = momentumValue < -momentumThreshold
+
+
+bgcolor((isPanicRSI and isHighMomentum) ? color.new(color.red, 80) : na, transp=80)
+bgcolor((isSurge and isLowMomentum) ? color.new(color.green, 80) : na, transp=80) 
+
+plotshape((isSurge and isLowMomentum), style=shape.triangledown, location=location.belowbar, color=color.red, size=size.small)
+plotshape((isPanicRSI and isHighMomentum), style = shape.triangleup, location = location.belowbar, color = color.green, size=size.small)
+
+hline(overboughtLevel, "Overbought Level", color=color.blue)
+hline(oversoldLevel, "Oversold Level", color=color.blue)
