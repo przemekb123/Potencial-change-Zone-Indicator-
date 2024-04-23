@@ -15,7 +15,6 @@ isOversold = rsiValue < oversoldLevel
 isPanicRSI = ta.change(rsiValue, 1) < -panicThreshold
 isSurge = ta.change(rsiValue, 1) > panicThreshold
 
-
 momentumLength = input(10, title="Momentum Length")
 prevClose = close[momentumLength]
 momentumValue = close - prevClose
